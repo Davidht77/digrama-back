@@ -1,38 +1,63 @@
 service: diagram-generator-api
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   iam:
     role: arn:aws:iam::150209693186:role/LabRole
   runtime: python3.9
-  region: us-east-1 # Puedes cambiar la región si lo deseas
+  region: us-east-1
+  timeout: 30
   stage: dev
   environment:
-    TABLE_NAME: ${self:service}-${sls:stage}-diagrams
+    DIAGRAM_BUCKET: diagrams-bucket-hackathon
+  
+  ecr:
+    images:
+      appimage:
+        path: ./
 
 functions:
+  # --- SINTAXIS CORREGIDA ---
   generateFlowchart:
-    handler: src/functions/generate_flowchart.generate_flowchart
+    image:
+      # 1. El nombre de la imagen que definimos en el provider
+      name: appimage
+      # 2. El comando que sobreescribe el CMD del Dockerfile
+      #    Le dice a Lambda qué función ejecutar DENTRO del contenedor.
+      command:
+        - src/functions/generate_flowchart.generate_flowchart
     events:
       - http:
           path: diagrams/flowchart
           method: post
           cors: true
+
   generateERD:
-    handler: src/functions/generate_erd.generate_erd
+    image:
+      name: appimage
+      command:
+        - src/functions/generate_erd.generate_erd
     events:
       - http:
           path: diagrams/erd
           method: post
           cors: true
+
   generateJSONSchema:
-    handler: src/functions/generate_json_schema.generate_json_schema
+    image:
+      name: appimage
+      command:
+        - src/functions/generate_json_schema.generate_json_schema
     events:
       - http:
           path: diagrams/json-schema
           method: post
           cors: true
 
+# La sección de 'resources' para DynamoDB no cambia.
 resources:
   Resources:
     DiagramsTable:
@@ -47,6 +72,4 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-plugins:
-  - serverless-python-requirements
-  - serverless-offline # Para desarrollo local
+# La sección 'custom' ya no es necesaria.

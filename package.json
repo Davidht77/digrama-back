@@ -5,5 +5,9 @@
   "main": "handler.py",
   "scripts": {
     "deploy": "serverless deploy"
+  },
+  "devDependencies": {
+    "serverless-offline": "^14.4.0",
+    "serverless-python-requirements": "^6.1.2"
   }
 }

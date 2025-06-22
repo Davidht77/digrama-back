@@ -28,7 +28,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # Cliente de S3 y nombre del bucket desde las variables de entorno
-S3_BUCKET_NAME = os.environ.get("DIAGRAMS_BUCKET")
+S3_BUCKET_NAME = "diagrams-bucket-hackathon"
 s3 = boto3.client("s3")
 
 
