@@ -1,0 +1,9 @@
+{
+  "name": "diagram-generator-api",
+  "version": "1.0.0",
+  "description": "Serverless API for generating various diagrams",
+  "main": "handler.py",
+  "scripts": {
+    "deploy": "serverless deploy"
+  }
+}
